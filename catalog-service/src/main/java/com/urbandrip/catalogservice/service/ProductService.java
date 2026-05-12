@@ -31,7 +31,7 @@ public class ProductService {
         return repository.save(product);
     }
 
-    // OBTENER PRODUCTOS
+    // OBTENER TODOS
     public List<Product> getProducts(){
 
         return repository.findAll();

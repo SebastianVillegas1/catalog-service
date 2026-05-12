@@ -5,6 +5,10 @@ import com.urbandrip.catalogservice.model.Product;
 import com.urbandrip.catalogservice.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
 
 @RequestMapping("/products")
 
+
 public class ProductController {
 
     @Autowired
@@ -20,24 +25,39 @@ public class ProductController {
 
     // CREAR PRODUCTO
     @PostMapping
-    public Product createProduct(
+    public ResponseEntity<Product> createProduct(
             @RequestBody ProductDTO dto){
 
-        return service.createProduct(dto);
+        return new ResponseEntity<>(
+                service.createProduct(dto),
+                HttpStatus.CREATED
+        );
     }
 
     // OBTENER TODOS
     @GetMapping
-    public List<Product> getProducts(){
+    public ResponseEntity<List<Product>> getProducts(){
 
-        return service.getProducts();
+        return ResponseEntity.ok(
+                service.getProducts()
+        );
     }
 
     // BUSCAR POR ID
     @GetMapping("/{id}")
-    public Product getProductById(
+    public ResponseEntity<?> getProductById(
             @PathVariable Long id){
 
-        return service.getProductById(id);
+        Product product =
+                service.getProductById(id);
+
+        if(product == null){
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Producto no encontrado");
+        }
+
+        return ResponseEntity.ok(product);
     }
 }
